@@ -26,7 +26,11 @@ final class MainCoordinator: Coordinator {
     }
     
     private func showSplashScreen() {
-        let vc = SplashScreen().hosted
+        let vc = MoviesListScreen(
+            viewModel: .init(
+                moviesUseCase: self.dependencies.moviesUseCase
+            )
+        ).hosted
         
         pushViewController(vc, animated: true)
     }
