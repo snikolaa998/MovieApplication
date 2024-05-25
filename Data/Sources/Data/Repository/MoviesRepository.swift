@@ -44,4 +44,16 @@ public struct MoviesRepository: MoviesRepositoryProtocol {
         let movies: MoviesEntityDTO = try await service.send(request)
         return movies.toMoviesEntity()
     }
+    
+    public func getMovie(id: Int) async throws -> MovieEntity {
+        guard let request = MovieDetailsAPIRequest(
+            authorization: .init(apiKey: APIConstants.apiKey),
+            movieId: id
+        ).generateURLRequest() else {
+            throw APIError.notFound
+        }
+        
+        let movie: MovieEntityDTO = try await service.send(request)
+        return movie.toMovieEntity()
+    }
 }

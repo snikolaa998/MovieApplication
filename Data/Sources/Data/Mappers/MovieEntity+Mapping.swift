@@ -15,7 +15,17 @@ extension MovieEntityDTO {
             id: id,
             posterPath: posterPath,
             title: title,
-            voteAverage: voteAverage
+            budget: budget,
+            releaseDate: releaseDate,
+            runtime: runtime,
+            genres: (genres ?? []).map { $0.toGenreEntity() },
+            voteAverage: voteAverage,
+            voteCount: voteCount,
+            revenue: revenue,
+            overview: overview,
+            popularity: popularity,
+            productionCompanies: (productionCompanies ?? []).map { $0.toCompaniesEntity() },
+            imdbId: imdbId
         )
     }
 }

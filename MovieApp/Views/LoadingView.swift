@@ -16,7 +16,7 @@ struct LoadingViewModifier: ViewModifier {
             if isLoading {
                 ProgressView()
                     .controlSize(.large)
-                    .tint(.white)
+                    .tint(.yellow)
             }
         }
     }

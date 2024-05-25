@@ -39,9 +39,12 @@ struct MoviesListScreen: View {
                 LazyVStack(spacing: 0) {
                     ForEach(Array(viewModel.state.movies.enumerated()), id: \.element.id) { index, movie in
                         MovieRowView(movie: movie)
-                        .task {
-                            viewModel.fetchMoreIfNeeded(at: index)
-                        }
+                            .onTapGesture {
+                                viewModel.dispatch(.onItemTapped(movie.id))
+                            }
+                            .task {
+                                viewModel.fetchMoreIfNeeded(at: index)
+                            }
                     }
                 }
             }

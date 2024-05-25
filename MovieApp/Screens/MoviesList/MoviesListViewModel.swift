@@ -22,11 +22,13 @@ final class MoviesListViewModel: ViewModel {
         case getMovies(String)
         case search(String)
         case clearArray
+        case onItemTapped(Int)
     }
     
     @Published var state = State()
     @Published var searchTerm = ""
     
+    private let onItemTapped: (Int) -> Void
     private let moviesUseCase: MoviesUseCaseProtocol
     private let loadMorePagesOffset = 3
     private let debounce: Int
@@ -35,10 +37,12 @@ final class MoviesListViewModel: ViewModel {
     private var cancellables = Set<AnyCancellable>()
     
     init(debounce: Int = 1,
-         moviesUseCase: MoviesUseCaseProtocol
+         moviesUseCase: MoviesUseCaseProtocol,
+         onItemTapped: @escaping(Int) -> Void
     ) {
         self.debounce = debounce
         self.moviesUseCase = moviesUseCase
+        self.onItemTapped = onItemTapped
         bindSearchTextListener()
     }
     
@@ -65,6 +69,8 @@ final class MoviesListViewModel: ViewModel {
         case .clearArray:
             currentPage = 1
             state.movies = []
+        case .onItemTapped(let movieId):
+            onItemTapped(movieId)
         }
     }
     

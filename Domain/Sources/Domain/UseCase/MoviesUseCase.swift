@@ -9,6 +9,7 @@ import Foundation
 
 public protocol MoviesUseCaseProtocol {
     func getMovies(page: Int, searchCriteria: String) async throws -> MoviesEntity
+    func getMovie(id: Int) async throws -> MovieEntity
 }
 
 public struct MoviesUseCase<T: MoviesRepositoryProtocol>: MoviesUseCaseProtocol {
@@ -26,5 +27,9 @@ public struct MoviesUseCase<T: MoviesRepositoryProtocol>: MoviesUseCaseProtocol 
         } else {
             return try await repo.getSearchedMovies(page: page, searchCriteria: searchCriteria)
         }
+    }
+    
+    public func getMovie(id: Int) async throws -> MovieEntity {
+        return try await repo.getMovie(id: id)
     }
 }

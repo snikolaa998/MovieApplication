@@ -14,7 +14,7 @@ final class MainCoordinator: Coordinator {
     var dependencies: Dependencies
     
     func begin() {
-        showSplashScreen()
+        showMoviesListScreen()
     }
     
     public init(
@@ -25,14 +25,29 @@ final class MainCoordinator: Coordinator {
         self.dependencies = dependencies
     }
     
-    private func showSplashScreen() {
+    private func showMoviesListScreen() {
         let vc = MoviesListScreen(
             viewModel: .init(
-                moviesUseCase: self.dependencies.moviesUseCase
+                moviesUseCase: self.dependencies.moviesUseCase, 
+                onItemTapped: { movieID in
+                    self.showMovieDetailsScreen(id: movieID)
+                }
             )
         ).hosted
         
-        pushViewController(vc, animated: true)
+        pushViewController(vc)
+    }
+    
+    private func showMovieDetailsScreen(id: Int) {
+        let vc = MovieDetailsScreen(
+            viewModel: .init(
+                moviesUseCase: self.dependencies.moviesUseCase,
+                id: id,
+                onDismiss: { self.popViewController(animated: true) }
+            )
+        ).hosted
+        
+        pushViewController(vc)
     }
 }
 
