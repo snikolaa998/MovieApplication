@@ -66,15 +66,15 @@ final class MoviesListViewModel: ViewModel {
             dispatch(.clearArray)
             dispatch(.getMovies(""))
         case .onAppear:
-            if Reachability().isConnectedToNetwork() {
-                dispatch(.getMovies(""))
-            } else {
-                dispatch(.loadLocalMovies)
-            }
+            dispatch(.getMovies(""))
         case .getMovies(let searchTerm):
             Task { [weak self] in
                 guard let self else { return }
-                await fetchMovies(for: searchTerm)
+                if Reachability().isConnectedToNetwork() {
+                    await fetchMovies(for: searchTerm)
+                } else {
+                    dispatch(.loadLocalMovies)
+                }
             }
         case .search(let searchTerm):
             if state.lastTextValue != searchTerm {
@@ -115,7 +115,8 @@ final class MoviesListViewModel: ViewModel {
                 if Reachability().isConnectedToNetwork() {
                     self.dispatch(.search($0))
                 } else {
-                    Task {
+                    Task { [weak self] in
+                        guard let self else { return }
                         await self.searchLocalMovies(for: self.searchTerm)
                     }
                 }
