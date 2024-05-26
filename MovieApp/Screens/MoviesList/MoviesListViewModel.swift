@@ -5,7 +5,7 @@
 //  Created by Nikola Savic on 21.5.24..
 //
 
-import Foundation
+import SwiftUI
 import Combine
 import SwiftData
 import Networking
@@ -112,9 +112,54 @@ final class MoviesListViewModel: ViewModel {
             .eraseToAnyPublisher()
             .sink(receiveValue: { [weak self] in
                 guard let self else { return }
-                self.dispatch(.search($0))
+                if Reachability().isConnectedToNetwork() {
+                    self.dispatch(.search($0))
+                } else {
+                    Task {
+                        await self.searchLocalMovies(for: self.searchTerm)
+                    }
+                }
             })
             .store(in: &cancellables)
+    }
+    
+    @MainActor
+    private func searchLocalMovies(for searchTerm: String) async {
+        if searchTerm != "" {
+            let predicate = #Predicate<MovieOffline> { movie in
+                movie.title?.localizedStandardContains(searchTerm) ?? false
+            }
+            let descriptor = FetchDescriptor(predicate: predicate)
+            let movies = try? container?.mainContext.fetch(descriptor)
+            state.movies = []
+            updateMoviesList(movies: movies ?? [])
+        } else {
+            state.movies = []
+            dispatch(.loadLocalMovies)
+        }
+    }
+    
+    private func updateMoviesList(movies: [MovieOffline]) {
+        for movie in movies {
+            state.movies.append(
+                .init(
+                    id: movie.id,
+                    posterPath: movie.posterPath,
+                    title: movie.title,
+                    budget: movie.budget,
+                    releaseDate: movie.releaseDate,
+                    runtime: movie.runtime,
+                    genres: [],
+                    voteAverage: movie.voteAverage,
+                    voteCount: movie.voteCount,
+                    revenue: movie.revenue,
+                    overview: movie.overview,
+                    popularity: movie.popularity,
+                    productionCompanies: [],
+                    imdbId: movie.imdbId
+                )
+            )
+        }
     }
     
     private func fetchMovies(for searchTerm: String) async {
@@ -162,26 +207,7 @@ final class MoviesListViewModel: ViewModel {
     private func loadMovies() async {
         let descriptor = FetchDescriptor<MovieOffline>()
         let movies = (try? container?.mainContext.fetch(descriptor)) ?? []
-        for movie in movies {
-            state.movies.append(
-                .init(
-                    id: movie.id,
-                    posterPath: movie.posterPath,
-                    title: movie.title,
-                    budget: movie.budget,
-                    releaseDate: movie.releaseDate,
-                    runtime: movie.runtime,
-                    genres: [],
-                    voteAverage: movie.voteAverage,
-                    voteCount: movie.voteCount,
-                    revenue: movie.revenue,
-                    overview: movie.overview,
-                    popularity: movie.popularity,
-                    productionCompanies: [],
-                    imdbId: movie.imdbId
-                )
-            )
-        }
+        updateMoviesList(movies: movies)
     }
     
     @MainActor

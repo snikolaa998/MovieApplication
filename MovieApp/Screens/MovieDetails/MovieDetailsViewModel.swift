@@ -118,7 +118,7 @@ final class MovieDetailsViewModel: ViewModel {
     
     @MainActor
     private func saveDetailsToLocalDB() async {
-        if !doesObjectExist(id: state.movie?.id ?? 0) {
+        if !doesObjectExist(id: state.movie?.id ?? 0, isDetails: true) {
             let offlineDetails = DetailsMovieOffline(
                 id: state.movie?.id ?? 0,
                 posterPath: state.movie?.posterPath,
@@ -156,8 +156,28 @@ final class MovieDetailsViewModel: ViewModel {
     }
     
     @MainActor
-    private func doesObjectExist(id: Int) -> Bool {
-        return getObject(id: id) != nil
+    private func doesObjectExist(id: Int, isDetails: Bool = false) -> Bool {
+        if isDetails {
+            return getObjectFromDetailsTable(id: id) != nil
+        } else {
+            return getObject(id: id) != nil
+        }
+    }
+    
+    @MainActor
+    private func getObjectFromDetailsTable(id: Int) -> DetailsMovieOffline? {
+        do {
+            let predicate = #Predicate<DetailsMovieOffline> { object in
+                object.id == id
+            }
+            var descriptor = FetchDescriptor(predicate: predicate)
+            descriptor.fetchLimit = 1
+            let object = try container?.mainContext.fetch(descriptor)
+            return object?.first
+        } catch {
+            state.toast = Toast(style: .info, message: "There is an error. Please try again later.")
+            return nil
+        }
     }
     
     @MainActor
