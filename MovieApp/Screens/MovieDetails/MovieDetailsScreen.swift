@@ -6,20 +6,14 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct MovieDetailsScreen: View {
     @StateObject var viewModel: MovieDetailsViewModel
     
     var body: some View {
         VStack(spacing: .zero) {
-            if viewModel.state.isConnected == .hasConnection {
-                content
-            } else if viewModel.state.isConnected == .noConnection {
-                VStack(spacing: .zero) {
-                    Text("No internet connection.")
-                    Spacer()
-                }
-            }
+            content
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.primaryBackground)
@@ -125,13 +119,25 @@ struct MovieDetailsScreen: View {
                 
                 Spacer()
             }
-            .overlay(alignment: .center) {
-                Text("Movie details")
-                    .foregroundStyle(.white)
-                    .font(.system(size: 24))
+        }
+        .overlay(alignment: .center) {
+            Text("Movie details")
+                .foregroundStyle(.white)
+                .font(.system(size: 24))
+        }
+        .overlay(alignment: .trailing) {
+            if viewModel.state.movie?.title != nil {
+                Image(viewModel.state.isFavorite ? .icHeartFill : .icHeartEmpty)
+                    .resizable()
+                    .frame(width: 22, height: 20)
+                    .padding(.trailing, 24)
+                    .onTapGesture {
+                        viewModel.dispatch(.saveFavoriteMovie(viewModel.state.movie))
+                    }
             }
         }
         .padding(.bottom, 16)
+        .padding(.top, 16)
     }
     
     @ViewBuilder
@@ -307,7 +313,7 @@ struct MovieDetailsScreen: View {
                 HStack(spacing: 6) {
                     if let productionCompanies = viewModel.state.movie?.productionCompanies {
                         ForEach(productionCompanies, id: \.id) {
-                            AsyncImage(url: URL(string: "https:image.tmdb.org/t/p/w185\($0.logoPath ?? "")")) { phase in
+                            CachedAsyncImage(url: URL(string: "https:image.tmdb.org/t/p/w185\($0.logoPath ?? "")")) { phase in
                                 if let image = phase.image {
                                     image
                                         .resizable()

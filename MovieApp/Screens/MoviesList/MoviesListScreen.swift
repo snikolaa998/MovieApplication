@@ -7,23 +7,53 @@
 
 import SwiftUI
 
+
 struct MoviesListScreen: View {
     @StateObject var viewModel: MoviesListViewModel
     @FocusState private var isSearchInputFocused: Bool
     
     var body: some View {
         VStack(spacing: 12) {
+            header
+            separator
             searchInput
             moviesList
             Spacer()
         }
-        .padding(.top, 24)
+        .padding(.top, 12)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(edges: .bottom)
         .background(Color.primaryBackground)
         .loadingView(isLoading: viewModel.state.isLoading)
         .task {
             viewModel.dispatch(.onAppear)
+        }
+    }
+    
+    private var separator: some View {
+        Color.white.opacity(0.8)
+            .frame(maxWidth: .infinity)
+            .frame(height: 1)
+    }
+    
+    private var header: some View {
+        HStack(spacing: .zero) {
+            Spacer()
+            
+            Text("Movies List")
+                .foregroundStyle(.white)
+                .font(.system(size: 24))
+            
+            Spacer()
+        }
+        .overlay(alignment: .trailing) {
+            Image(.icHeartFill)
+                .resizable()
+                .frame(width: 22, height: 20)
+                .padding(.trailing, 24)
+                .onTapGesture {
+                    viewModel.dispatch(.onFavoritesTapped)
+                }
         }
     }
     

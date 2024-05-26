@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 import Domain
 
 struct MovieRowView: View {
@@ -49,7 +50,7 @@ struct MovieRowView: View {
     }
     
     private func image(url: URL?) -> some View {
-        AsyncImage(url: url) { phase in
+        CachedAsyncImage(url: url) { phase in
             if let image = phase.image {
                 content(image: image)
             } else if phase.error != nil {
