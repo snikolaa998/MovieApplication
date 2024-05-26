@@ -20,7 +20,7 @@ struct MovieRowView: View {
         VStack(spacing: 6) {
             HStack(spacing: 6) {
                 if let imagePath = movie.posterPath {
-                    image(url: URL(string: "https:image.tmdb.org/t/p/w185\(imagePath)"))
+                    image(url: URL(string: "\(Configuration.posterBaseUrl)\(imagePath)"))
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {

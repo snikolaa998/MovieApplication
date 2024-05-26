@@ -10,4 +10,5 @@ import Foundation
 public struct APIConstants {
     public static let baseURL = Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String ?? ""
     public static let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String ?? ""
+    public static let posterBaseURL = Bundle.main.object(forInfoDictionaryKey: "POSTER_BASE_URL") as? String ?? ""
 }

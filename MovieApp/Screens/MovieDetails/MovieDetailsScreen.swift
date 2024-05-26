@@ -159,7 +159,7 @@ struct MovieDetailsScreen: View {
                 Spacer()
             }
             
-            AsyncImage(url: URL(string: "https:image.tmdb.org/t/p/w185\(viewModel.state.movie?.posterPath ?? "")")) { phase in
+            AsyncImage(url: URL(string: "\(Configuration.posterBaseUrl)\(viewModel.state.movie?.posterPath ?? "")")) { phase in
                 if let image = phase.image {
                     content(image: image)
                 } else if phase.error != nil {
@@ -313,7 +313,7 @@ struct MovieDetailsScreen: View {
                 HStack(spacing: 6) {
                     if let productionCompanies = viewModel.state.movie?.productionCompanies {
                         ForEach(productionCompanies, id: \.id) {
-                            CachedAsyncImage(url: URL(string: "https:image.tmdb.org/t/p/w185\($0.logoPath ?? "")")) { phase in
+                            CachedAsyncImage(url: URL(string: "\(Configuration.posterBaseUrl)\($0.logoPath ?? "")")) { phase in
                                 if let image = phase.image {
                                     image
                                         .resizable()

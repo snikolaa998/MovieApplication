@@ -16,6 +16,7 @@ final class MoviesListViewModel: ViewModel {
         var movies: [MovieEntity] = []
         var lastTextValue = ""
         var isLoading = false
+        var toast: Toast?
     }
     
     enum Action {
@@ -194,6 +195,7 @@ final class MoviesListViewModel: ViewModel {
             let object = try container?.mainContext.fetch(descriptor)
             return object?.first
         } catch {
+            state.toast = Toast(style: .info, message: "There is an error. Please try again later.")
             return nil
         }
     }

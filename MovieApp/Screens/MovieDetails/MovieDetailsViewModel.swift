@@ -17,6 +17,7 @@ final class MovieDetailsViewModel: ViewModel {
         var isConnected: InternetConnectionStatus = .checking
         var isFavorite = false
         var localDetails: DetailsMovieOffline?
+        var toast: Toast?
     }
     
     enum Action {
@@ -75,6 +76,7 @@ final class MovieDetailsViewModel: ViewModel {
                     dispatch(.isFavorite)
                 } catch {
                     state.isLoading = false
+                    state.toast = Toast(style: .info, message: "There is an error. Please try again later.")
                 }
             }
         case .saveFavoriteMovie(let movie):
@@ -88,7 +90,7 @@ final class MovieDetailsViewModel: ViewModel {
                     do {
                         try container?.mainContext.save()
                     } catch {
-                        print("Handle error with toast example...")
+                        state.toast = Toast(style: .info, message: "There is an error. Please try again later.")
                     }
                 } else {
                     state.isFavorite = true
@@ -148,6 +150,7 @@ final class MovieDetailsViewModel: ViewModel {
             let object = try container?.mainContext.fetch(descriptor)
             return object?.first
         } catch {
+            state.toast = Toast(style: .info, message: "There is an error. Please try again later.")
             return nil
         }
     }

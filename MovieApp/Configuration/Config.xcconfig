@@ -1,0 +1,13 @@
+//
+//  Config.xcconfig
+//  MovieApp
+//
+//  Created by Nikola Savic on 26.5.24..
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+API_KEY = eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMjZkZDA3MDIzZTFmNjFiOTU5ZjMyMjQxYTdlMzZkZSIsInN1YiI6IjY2MDk4ZTQzMGQ0MTdlMDE3YzA4NzFjNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kuqB6qcuWyeJTi0EieiK4UPnzVgg1vA-Biqu02lJ7sQ
+BASE_URL = https:/$()api.themoviedb.org/3/
+POSTER_BASE_URL = https:$()image.tmdb.org/t/p/w185

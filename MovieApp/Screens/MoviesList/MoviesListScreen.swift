@@ -25,6 +25,7 @@ struct MoviesListScreen: View {
         .ignoresSafeArea(edges: .bottom)
         .background(Color.primaryBackground)
         .loadingView(isLoading: viewModel.state.isLoading)
+        .toastView(toast: $viewModel.state.toast)
         .task {
             viewModel.dispatch(.onAppear)
         }
